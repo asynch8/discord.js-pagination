@@ -9,7 +9,7 @@ const paginationEmbed = async (msg, pages, emojiList = ['⏪', '⏩'], timeout =
 		(reaction, user) => emojiList.includes(reaction.emoji.name) && !user.bot,
 		{ time: timeout }
 	);
-	reactionCollector.on('collect', reaction => {
+	reactionCollector.on('collect', async (reaction) => {
 		reaction.remove(msg.author.id);
 		switch (reaction.emoji.name) {
 			case emojiList[0]:
@@ -21,6 +21,7 @@ const paginationEmbed = async (msg, pages, emojiList = ['⏪', '⏩'], timeout =
 			default:
 				break;
 		}
+		await curPage.edit('-', { attachments: [] });
 		curPage.edit(pages[page].setFooter(`Page ${page + 1} / ${pages.length}`));
 	});
 	reactionCollector.on('end', () => {
